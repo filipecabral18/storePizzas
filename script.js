@@ -1,4 +1,5 @@
 //Função utilizada para melhorar questões de redundâncias no código.
+let modalqt = 1
 const qslt = (el) =>document.querySelector(el);
 const qsltall = (el) =>document.querySelectorAll(el);
 
@@ -15,23 +16,22 @@ pizzaJson.map((item, index)=>{
     pizzaItem.querySelector('a').addEventListener('click', (e) => {
         e.preventDefault();
         let key = e.target.closest('.pizza-item').getAttribute('data-key');
+        modalqt = 1
 
         qslt('.pizzaInfo h1').innerHTML = pizzaJson[key].name;
         qslt('.pizzaInfo--desc').innerHTML = pizzaJson[key].description;
         qslt('.pizzaBig img').src = pizzaJson[key].img;
         qslt('.pizzaInfo--size.selected').classList.remove('selected')
         qslt('.pizzaInfo--actualPrice').innerHTML = `R$ ${pizzaJson[key].price.toFixed(2)}`;
-        qsltall('.pizzaInfo--size').forEach((size, sizeindex)=>{
-            
+        qsltall('.pizzaInfo--size').forEach((size, sizeindex)=>{            
            if(sizeindex == 2){
                size.classList.add('selected')
-           }
-            
+           }            
             size.querySelector('span').innerHTML = pizzaJson[key].sizes[sizeindex]
             
         });
 
-
+        qslt('.pizzaInfo--qt').innerHTML = modalqt;
 
 
         qslt('.pizzaWindowArea').style.opacity = 0
@@ -43,3 +43,33 @@ pizzaJson.map((item, index)=>{
 
     qslt('.pizza-area').append(pizzaItem);
 })
+
+function closeModal(){
+    qslt('.pizzaWindowArea').style.opacity = 0;
+    setTimeout(()=>{
+        qslt('.pizzaWindowArea').style.display = 'none';
+    }, 500);
+}
+qsltall('.pizzaInfo--cancelButton, .pizzaInfo--cancelMobileButton').forEach((item)=>{
+    item.addEventListener('click', closeModal);
+});
+
+qslt('.pizzaInfo--qtmais').addEventListener('click',()=>{ 
+    modalqt ++;
+    qslt('.pizzaInfo--qt').innerHTML = modalqt;
+    
+});
+
+qslt('.pizzaInfo--qtmenos').addEventListener('click',()=>{ 
+    if(modalqt > 1){       
+        modalqt --;
+        qslt('.pizzaInfo--qt').innerHTML = modalqt;
+    }
+});
+
+qsltall('.pizzaInfo--size').forEach((size, sizeIndex)=>{
+    size.addEventListener('click', (e)=>{
+        qslt('.pizzaInfo--size.selected').classList.remove('selected');
+        size.classList.add('selected');
+    })
+});
